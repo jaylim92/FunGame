@@ -59,6 +59,8 @@ text-align: center;
     margin: 8px;
     background-color: wheat;
     visibility: hidden;
+    user-select: none;
+    cursor: auto;
 }
 
 .game__score{
@@ -72,6 +74,8 @@ text-align: center;
     color: white;
     margin: 8px;
     visibility: hidden;
+    user-select: none;
+    cursor: auto;
 }
 
 .pop-up {
@@ -101,4 +105,14 @@ text-align: center;
 .pop-up__message{
     display: block;
     font-size: 60px;
+}
+
+.carrot,
+.bug {
+    transition: transform 100ms ease-in;
+}
+
+.carrot:hover,
+.bug:hover{
+    transform: scale(1.1);
 }

@@ -1,9 +1,9 @@
 "use strict";
 
 const CARROT_SIZE = 80;
-const CARROT_COUNT = 5;
-const BUG_COUNT = 5;
-const GAME_DURATION_SEC = 5;
+const CARROT_COUNT = 20;
+const BUG_COUNT = 20;
+const GAME_DURATION_SEC = 20;
 
 const field = document.querySelector(".game__field");
 const fieldRect = field.getBoundingClientRect();
@@ -13,6 +13,12 @@ const gameScore = document.querySelector(".game__score");
 const popUp = document.querySelector(".pop-up");
 const popUpText = document.querySelector(".pop-up__message");
 const popUpRefresh = document.querySelector(".pop-up__refresh");
+
+const carrotSound = new Audio("./sound/carrot_pull.mp3");
+const alertSound = new Audio("./sound/alert.wav");
+const backgroundSound = new Audio("./sound/bg.mp3");
+const bugSound = new Audio("./sound/bug_pull.mp3");
+const winSound = new Audio("./sound/game_win.mp3");
 
 let started = false;
 let score = 0;
@@ -39,6 +45,7 @@ function startGame() {
   showStopButton();
   showTimerAndSoce();
   startGameTimer();
+  playSound(backgroundSound);
 }
 
 function stopGame() {
@@ -47,12 +54,20 @@ function stopGame() {
   disappearStopBtn();
   showPopUpText("REPLAY?😛");
   popUpReplay();
+  playSound(alertSound);
+  stopSound(backgroundSound);
 }
 
 function finishGame(win) {
   started = false;
   disappearStopBtn();
+  if (win) {
+    playSound(winSound);
+  } else {
+    playSound(bugSound);
+  }
   stopGameTimer();
+  stopSound(backgroundSound);
   showPopUpText(win ? "You Win!" : "You Lost😛");
 }
 
@@ -81,8 +96,9 @@ function updateTimerText(time) {
 
 function showStopButton() {
   const icon = playBtn.querySelector(".fas");
-  icon.classList.add("fas-stop");
+  icon.classList.add("fa-stop");
   icon.classList.remove("fa-play");
+  playBtn.style.visibility = "visible";
 }
 
 function showPopUpText(text) {
@@ -124,6 +140,7 @@ function onFieldClick(event) {
     //당근
     target.remove();
     score++;
+    playSound(carrotSound);
     updateScoreBoard();
     if (score === CARROT_COUNT) {
       finishGame(true);
@@ -132,6 +149,15 @@ function onFieldClick(event) {
     //벌레
     finishGame(false);
   }
+}
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play();
+}
+
+function stopSound(sound) {
+  sound.pause();
 }
 
 function updateScoreBoard() {
